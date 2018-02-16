@@ -7,7 +7,6 @@ const {
     GraphQLString
 } = require('graphql')
 const ContestType = require('./contest')
-const mdb = require('../../database/mdb')
 
 module.exports = new GraphQLObjectType({
     name: 'UserType',
@@ -25,20 +24,26 @@ module.exports = new GraphQLObjectType({
         },
         contestsCount: {
             type: GraphQLInt,
-            resolve(parent, args, {mPool}, {fieldName}) {
-                return mdb(mPool).getCounts(parent.id, fieldName)
+            resolve(parent, args, {loaders}, {fieldName}) {
+                console.log(fieldName)
+                return loaders.userCountsByIds.load(parent.id)
+                .then(res => res[fieldName])
             }
         },
         namesCount: {
             type: GraphQLInt,
-            resolve(parent, args, {mPool}, {fieldName}) {
-                return mdb(mPool).getCounts(parent.id, fieldName)
+            resolve(parent, args, {loaders}, {fieldName}) {
+                console.log(fieldName)
+                return loaders.userCountsByIds.load(parent.id)
+                .then(res => res[fieldName])
             }
         },
         votesCount: {
             type: GraphQLInt,
-            resolve(parent, args, {mPool}, {fieldName}) {
-                return mdb(mPool).getCounts(parent.id, fieldName)
+            resolve(parent, args, {loaders}, {fieldName}) {
+                console.log(fieldName)
+                return loaders.userCountsByIds.load(parent.id)
+                .then(res => res[fieldName])
             }
         },
     }
