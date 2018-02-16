@@ -6,10 +6,9 @@ const {
     GraphQLString
 } = require('graphql')
 const pgdb = require('../database/pgdb')
+const fizzbuzzdb = require('../database/fizzbuzz')
 const UserType = require('./types/user')
-const UserResolver = require('./resolvers/user')
 const FizzBuzzType = require('./types/fizzbuzz')
-const FizzBuzzResolver = require('./resolvers/fizzbuzz')
 
 const RootQueryType = new GraphQLObjectType({
     name: 'RootQueryType',
@@ -23,7 +22,7 @@ const RootQueryType = new GraphQLObjectType({
             description: 'Game of Fizz Buzz',
             type: FizzBuzzType,
             resolve: (parent, {number}, {}) => {
-                return FizzBuzzResolver.resolve(number)
+                return fizzbuzzdb.resolve(number)
             }
         },
         'user':{
@@ -36,7 +35,7 @@ const RootQueryType = new GraphQLObjectType({
             type: UserType,
             description: 'Use record from API key',
             resolve: (objparent, {key}, {pgPool}) => { 
-                return UserResolver(pgPool).resolve(key)
+                return pgdb(pgPool).getUserByApiKey(key)
             }
         },
         'hello': {

@@ -40,8 +40,9 @@ module.exports = pgPool => {
                 select * 
                 from users 
                 where api_key = $1
-            `, [apiKey]).then( res => { 
-                return res.rows[0]
+                `, [apiKey])
+                .then( res => { 
+                    return humps.camelizeKeys(res.rows[0])
             })
         },
         getUsersByIds(ids) {
