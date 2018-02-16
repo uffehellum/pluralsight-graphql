@@ -6,7 +6,9 @@
   "license": "ISC",
   "scripts": {
     "start": "node lib/index",
-    "dev": "nodemon --exec node lib"
+    "dev": "nodemon --exec node lib",
+    "test": "mocha database/**/*-test.js lib/*-test.js schema/*-test.js",
+    "dependency": "mocha database/**/*-dependency.js"
   },
   "repository": {
     "type": "git",

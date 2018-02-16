@@ -40,6 +40,19 @@ module.exports = pgPool => {
                 return orderedForMany(res.rows, contestIds, 'contestId')
             })
         },
+        getTotalVotesByNameIds(nameIds) {
+            return pgPool.query(`
+                select 
+                    sum(case when up then 1 else 0 end) as up, 
+                    sum(case when up then 0 else 1 end) as down, 
+                    name_id 
+                from votes 
+                group by name_id
+                having name_id = any($1)
+            `, [nameIds]).then(res => {
+                return orderedFor(res.rows, nameIds, 'nameId')
+            })
+        },
         getUsersByApiKeys(apiKeys) {
             return pgPool.query(`
                 select * 
