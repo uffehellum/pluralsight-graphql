@@ -34,8 +34,8 @@ const RootQueryType = new GraphQLObjectType({
             },
             type: UserType,
             description: 'Use record from API key',
-            resolve: (objparent, {key}, {pgPool}) => { 
-                return pgdb(pgPool).getUserByApiKey(key)
+            resolve: (objparent, {key}, {loaders}) => { 
+                return loaders.usersByApiKeys.load(key)
             }
         },
         'hello': {

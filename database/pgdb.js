@@ -10,39 +10,44 @@ function orderedFor(rows, ids, field) {
         return {}
     })
 }
+function orderedForMany(rows, ids, field) {
+    const data = humps.camelizeKeys(rows)
+    const h = _.groupBy(data, field)
+    return ids.map(id => {
+        const a = h[id]
+        if (a) return a
+        return []
+    })
+}
 
 module.exports = pgPool => {
     return {
-        getContests(user) {
-            // console.log(`getContests(${user})`)
+        getContestsForUserIds(userIds) {
             return pgPool.query(`
                 select * 
                 from contests 
-                where created_by = $1
-            `, [user.id]).then(res => {
-                // console.log(res)
-                return humps.camelizeKeys(res.rows)
+                where created_by = any($1)
+            `, [userIds]).then(res => {
+                return orderedForMany(res.rows, userIds, 'createdBy')
             })
         },
-        getNames(user) {
-            // console.log(`getContests(${user})`)
+        getNamesForUserIds(userIds) {
             return pgPool.query(`
                 select * 
                 from names 
-                where created_by = $1
-            `, [user.id]).then(res => {
-                // console.log(res)
-                return humps.camelizeKeys(res.rows)
+                where created_by = any($1)
+            `, [userIds]).then(res => {
+                return orderedForMany(res.rows, userIds, 'createdBy')
             })
         },
-        getUserByApiKey(apiKey) {
+        getUsersByApiKeys(apiKeys) {
             return pgPool.query(`
                 select * 
                 from users 
-                where api_key = $1
-                `, [apiKey])
+                where api_key = any($1)
+                `, [apiKeys])
                 .then( res => { 
-                    return humps.camelizeKeys(res.rows[0])
+                    return orderedFor(res.rows, apiKeys, 'apiKey')
             })
         },
         getUsersByIds(ids) {
