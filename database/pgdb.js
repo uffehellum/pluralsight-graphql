@@ -31,13 +31,13 @@ module.exports = pgPool => {
                 return orderedForMany(res.rows, userIds, 'createdBy')
             })
         },
-        getNamesForUserIds(userIds) {
+        getNamesForContestIds(contestIds) {
             return pgPool.query(`
                 select * 
                 from names 
-                where created_by = any($1)
-            `, [userIds]).then(res => {
-                return orderedForMany(res.rows, userIds, 'createdBy')
+                where contest_id = any($1)
+            `, [contestIds]).then(res => {
+                return orderedForMany(res.rows, contestIds, 'contestId')
             })
         },
         getUsersByApiKeys(apiKeys) {
