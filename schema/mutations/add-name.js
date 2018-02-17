@@ -17,7 +17,7 @@ const NameInputType = new GraphQLInputObjectType({
     }
 })
 
-module.exports ={
+module.exports = {
     name: 'AddNameMutation',
     type: NameType,
     args: {

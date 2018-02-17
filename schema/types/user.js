@@ -11,6 +11,8 @@ module.exports = new GraphQLObjectType({
     name: 'UserType',
     fields: () => {
         const ContestType = require('./contest')
+        const ActivityType = require('./activity')
+
         return {
             id: { type: GraphQLID },
             firstName: { type: GraphQLString },
@@ -22,6 +24,13 @@ module.exports = new GraphQLObjectType({
                 resolve(obj, args, { loaders }) {
                     return loaders.contestsForUserIds.load(obj.id)
                 },
+            },
+            activities: {
+                type: new GraphQLList(ActivityType),
+                resolve(obj, args, { loaders }){
+                    console.log('resolve activities', obj)
+                    return loaders.activitiesForUserIds.load(obj.id)
+                }
             },
             contestsCount: {
                 type: GraphQLInt,
