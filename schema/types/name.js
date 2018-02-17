@@ -18,8 +18,6 @@ module.exports = new GraphQLObjectType({
             createdBy: {
                 type: UserType,
                 resolve(parent, args, { loaders }) {
-                    //console.log(parent)
-                    // return pgdb(pgPool).getUserById(parent.createdBy)
                     return loaders.usersByIds.load(parent.createdBy)
                 }
             },

@@ -1,5 +1,6 @@
 const humps = require('humps')
 const _ = require('lodash')
+const { slug } = require('../lib/util')
 
 function orderedFor(rows, ids, field) {
     const data = humps.camelizeKeys(rows)
@@ -19,6 +20,7 @@ function orderedForMany(rows, ids, field) {
         return []
     })
 }
+
 
 module.exports = pgPool => {
     return {
@@ -63,6 +65,7 @@ module.exports = pgPool => {
                     return orderedFor(res.rows, apiKeys, 'apiKey')
             })
         },
+
         getUsersByIds(ids) {
             return pgPool.query(`
                 select * 
@@ -72,5 +75,33 @@ module.exports = pgPool => {
                 return orderedFor(res.rows, ids, 'id')
             })
         },
+
+        addNewContest({apiKey, title, description}) {
+            return pgPool.query(`
+            insert into contests(code, title, description, created_by)
+            values($1, $2, $3,
+                (select id from users where api_key = $4))
+            returning *
+            `,
+            [slug(title), title, description, apiKey]).then(res =>{
+                return humps.camelizeKeys(res.rows[0])
+            })
+        },
+
+        addNewName({apiKey, contestCode, label, description}) {
+            console.log('addNewName', apiKey, contestCode, label, description)
+            return pgPool.query(`
+            insert into names(contest_id, label, normalized_label, description, created_by)
+            values(
+                (select id from contests where code = $1),
+                $2, $3, $4,
+                (select id from users where api_key = $5))
+            returning *
+            `,
+            [contestCode, label, slug(label), description, apiKey]).then(res =>{
+                return humps.camelizeKeys(res.rows[0])
+            })
+        }
+
     }
 }

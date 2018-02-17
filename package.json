@@ -5,9 +5,9 @@
   "author": "Samer Buna",
   "license": "ISC",
   "scripts": {
-    "start": "node lib/index",
+    "start": "node lib",
     "dev": "nodemon --exec node lib",
-    "test": "mocha database/**/*-test.js lib/*-test.js schema/*-test.js",
+    "test": "mocha database/**/*-test.js", 
     "dependency": "mocha database/**/*-dependency.js"
   },
   "repository": {
@@ -29,6 +29,7 @@
     "humps": "^2.0.1",
     "lodash": "^4.17.5",
     "mongodb": "^2.1.18",
+    "pattern-replace": "^0.1.2",
     "pg": "^6.0.1"
   },
   "devDependencies": {
